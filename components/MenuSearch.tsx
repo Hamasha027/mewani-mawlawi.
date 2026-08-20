@@ -4,6 +4,7 @@ import { useState, useTransition, useMemo } from 'react';
 import { Search, Home, Gem, Sparkles, Flower2, Palette, Circle, Diamond, CheckCircle2, Zap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import MenuGrid from '@/components/MenuGrid';
+import CategoryBar from '@/components/CategoryBar';
 import { useLocale } from 'next-intl';
 import { type MenuItem } from '@/lib/db';
 import { CATEGORIES } from '@/lib/categories';
@@ -135,42 +136,13 @@ export default function MenuSearch({ items }: MenuSearchProps) {
     <>
       {/* Categories and Search Section */}
       <div className="flex flex-col gap-3 items-center mt-6 mb-4 px-1 md:px-0 w-full">
-        {/* Categories with loading indicator */}
-        <div
-          className="flex gap-1 md:gap-3 overflow-x-auto overflow-y-hidden w-full md:justify-between md:pb-2 pb-2 px-2 md:px-0 scroll-smooth [-webkit-overflow-scrolling:touch]"
-          style={{
-            scrollSnapType: 'x mandatory',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-          }}
-        >
-          <style>{`
-            .categories-scroll::-webkit-scrollbar {
-              display: none;
-            }
-          `}</style>
-          {categories.map((category) => {
-            const IconComponent = category.icon;
-            const isSelected = selectedCategory === category.id;
-            return (
-              <button
-                key={category.id}
-                onClick={() => handleCategoryClick(category.id)}
-                disabled={isPending}
-                className={`flex flex-col items-center gap-0.5 px-2 md:px-3 py-1.5 md:py-2 rounded-none transition-all duration-200 flex-shrink-0 border-b-2 disabled:opacity-60 ${isSelected
-                  ? 'bg-transparent border-b-2 border-[#000000] text-[#000000]'
-                  : 'bg-transparent hover:border-b-2 hover:border-[#000000] hover:text-[#000000] text-gray-600 border-b-2 border-transparent'
-                  }`}
-                style={{ scrollSnapAlign: 'center' }}
-                title={category.name}
-              >
-                <IconComponent className="w-4 h-4 md:w-5 md:h-5" />
-                <span className={`text-[11px] md:text-xs text-center whitespace-nowrap ${isSelected ? 'font-bold' : 'font-medium'
-                  }`}>{category.name}</span>
-              </button>
-            );
-          })}
-        </div>
+        {/* Categories Bar */}
+        <CategoryBar
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={handleCategoryClick}
+          isPending={isPending}
+        />
 
         {/* Search Input with Animated Border */}
         <style>{`
@@ -292,29 +264,29 @@ export default function MenuSearch({ items }: MenuSearchProps) {
                 return 0;
               })
               .map(([categoryId, categoryItems]) => (
-              <div key={categoryId} className="w-full">
-                <div className="mb-6 md:mb-8">
-                  {/* Mobile: Stacked layout */}
-                  <div className="md:hidden flex items-center justify-center gap-3">
-                    <div className="flex-1 h-0.5 bg-[#000000]"></div>
-                    <h2 className="text-base font-bold text-[#000000] text-center whitespace-nowrap px-2">
-                      {categoryMap[categoryId] || categoryId}
-                    </h2>
-                    <div className="flex-1 h-0.5 bg-[#000000]"></div>
-                  </div>
+                <div key={categoryId} className="w-full">
+                  <div className="mb-6 md:mb-8">
+                    {/* Mobile: Stacked layout */}
+                    <div className="md:hidden flex items-center justify-center gap-3">
+                      <div className="flex-1 h-0.5 bg-[#000000]"></div>
+                      <h2 className="text-base font-bold text-[#000000] text-center whitespace-nowrap px-2">
+                        {categoryMap[categoryId] || categoryId}
+                      </h2>
+                      <div className="flex-1 h-0.5 bg-[#000000]"></div>
+                    </div>
 
-                  {/* Desktop: Line design */}
-                  <div className="hidden md:flex items-center justify-center gap-4">
-                    <div className="flex-1 h-px bg-[#000000]"></div>
-                    <h2 className="text-lg font-bold text-[#000000] px-4 whitespace-nowrap">
-                      {categoryMap[categoryId] || categoryId}
-                    </h2>
-                    <div className="flex-1 h-px bg-[#000000]"></div>
+                    {/* Desktop: Line design */}
+                    <div className="hidden md:flex items-center justify-center gap-4">
+                      <div className="flex-1 h-px bg-[#000000]"></div>
+                      <h2 className="text-lg font-bold text-[#000000] px-4 whitespace-nowrap">
+                        {categoryMap[categoryId] || categoryId}
+                      </h2>
+                      <div className="flex-1 h-px bg-[#000000]"></div>
+                    </div>
                   </div>
+                  <MenuGrid items={categoryItems} />
                 </div>
-                <MenuGrid items={categoryItems} />
-              </div>
-            ))}
+              ))}
           </div>
         ) : selectedCategory !== 'all' && filteredItems.length > 0 ? (
           <MenuGrid items={filteredItems} />

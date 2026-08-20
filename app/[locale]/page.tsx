@@ -9,6 +9,7 @@ import ScrollButtons from '@/components/ScrollButtons';
 import Navbar from '@/components/Navbar';
 import Carousel from '@/components/Carousel';
 import Loading from './loading';
+import CategoryBar from '@/components/CategoryBar';
 import { CATEGORIES } from '@/lib/categories';
 import { Home as HomeIcon, Gem, Sparkles, Flower2, Palette, Circle, Diamond, CheckCircle2, Zap } from 'lucide-react';
 import { useLocale } from 'next-intl';
@@ -47,34 +48,11 @@ function EmptyStateWithCategories({ locale }: { locale: string }) {
 
       {/* Categories Section */}
       <div className="flex flex-col gap-3 items-center mt-6 mb-4 px-1 md:px-0 w-full">
-        <div
-          className="flex gap-1 md:gap-3 overflow-x-auto overflow-y-hidden w-full md:justify-between md:pb-2 pb-2 px-2 md:px-0 scroll-smooth [-webkit-overflow-scrolling:touch]"
-          style={{
-            scrollSnapType: 'x mandatory',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-          }}
-        >
-          <style>{`
-            .categories-scroll::-webkit-scrollbar {
-              display: none;
-            }
-          `}</style>
-          {categories.map((category) => {
-            const IconComponent = category.icon;
-            return (
-              <div
-                key={category.id}
-                className={`flex flex-col items-center gap-0.5 px-2 md:px-3 py-1.5 md:py-2 rounded-none transition-all duration-200 flex-shrink-0 border-b-2 border-transparent text-gray-600`}
-                style={{ scrollSnapAlign: 'center' }}
-                title={category.name}
-              >
-                <IconComponent className="w-4 h-4 md:w-5 md:h-5" />
-                <span className={`text-[11px] md:text-xs text-center whitespace-nowrap font-medium`}>{category.name}</span>
-              </div>
-            );
-          })}
-        </div>
+        <CategoryBar
+          categories={categories}
+          selectedCategory="all"
+          onSelectCategory={() => {}}
+        />
       </div>
 
       {/* Empty State Message */}
